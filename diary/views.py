@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from .models import DiaryEntry
 from .forms import DiaryEntryForm
 from django.db.models import Q  # Импортируем Q для сложного поиска
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login as login_user
 
 
 @login_required
@@ -77,3 +79,19 @@ def entry_delete(request, pk):
         entry.delete()
         return redirect("entry_list")
     return render(request, "diary/entry_confirm_delete.html", {"entry": entry})
+
+
+def register(request):
+    """Регистрация нового пользователя"""
+    if request.user.is_authenticated:
+        return redirect('entry_list')  # Если уже залогинен, отправляем на главную
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login_user(request, user)  # Автоматический вход после регистрации
+            return redirect('entry_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'diary/register.html', {'form': form})
