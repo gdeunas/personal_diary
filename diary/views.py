@@ -1,14 +1,16 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import DiaryEntry
-from .forms import DiaryEntryForm
-from django.db.models import Q  # Импортируем Q для сложного поиска
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as login_user
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q  # Импортируем Q для сложного поиска
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import DiaryEntryForm
+from .models import DiaryEntry
 
 
 @login_required
-def entry_list(request):
+def entry_list(request: HttpRequest) -> HttpResponse:
     """Просмотр записей + поиск"""
     entries = DiaryEntry.objects.filter(user=request.user)
 
@@ -28,14 +30,14 @@ def entry_list(request):
 
 
 @login_required
-def entry_detail(request, pk):
+def entry_detail(request: HttpRequest, pk: int) -> HttpResponse:
     """Детальный просмотр одной записи"""
     entry = get_object_or_404(DiaryEntry, pk=pk, user=request.user)
     return render(request, "diary/entry_detail.html", {"entry": entry})
 
 
 @login_required
-def entry_create(request):
+def entry_create(request: HttpRequest) -> HttpResponse:
     """Создание записи с поддержкой фото"""
     if request.method == "POST":
         form = DiaryEntryForm(request.POST, request.FILES)  # Добавили request.FILES
@@ -52,7 +54,7 @@ def entry_create(request):
 
 
 @login_required
-def entry_edit(request, pk):
+def entry_edit(request: HttpRequest, pk: int) -> HttpResponse:
     """Редактирование записи с поддержкой фото"""
     entry = get_object_or_404(DiaryEntry, pk=pk, user=request.user)
     if request.method == "POST":
@@ -72,7 +74,7 @@ def entry_edit(request, pk):
 
 
 @login_required
-def entry_delete(request, pk):
+def entry_delete(request: HttpRequest, pk: int) -> HttpResponse:
     """Удаление записи"""
     entry = get_object_or_404(DiaryEntry, pk=pk, user=request.user)
     if request.method == "POST":
@@ -81,17 +83,20 @@ def entry_delete(request, pk):
     return render(request, "diary/entry_confirm_delete.html", {"entry": entry})
 
 
-def register(request):
+def register(request: HttpRequest) -> HttpResponse:
     """Регистрация нового пользователя"""
     if request.user.is_authenticated:
-        return redirect('entry_list')  # Если уже залогинен, отправляем на главную
+        return redirect("entry_list")  # Если уже залогинен, отправляем на главную
 
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+    if request.method == "POST":
+        # Add explicit type hint annotation here
+        form: UserCreationForm = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login_user(request, user)  # Автоматический вход после регистрации
-            return redirect('entry_list')
+            return redirect("entry_list")
     else:
+        # And add the explicit type hint annotation here too
         form = UserCreationForm()
-    return render(request, 'diary/register.html', {'form': form})
+
+    return render(request, "diary/register.html", {"form": form})

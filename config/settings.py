@@ -20,12 +20,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-8d24u$q^u#!f8(#%bi84(vo4=apjw#by6-^+vzc!nfsrrgd4ue"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-8d24u$q^u#!f8(#%bi84(vo4=apjw#by6-^+vzc!nfsrrgd4ue"
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    if host.strip()
+]
 
 
 # Application definition
@@ -75,8 +80,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "project_db"),
+        "USER": os.getenv("POSTGRES_USER", "project_user"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "project_password"),
+        "HOST": os.getenv(
+            "DB_HOST", "db"
+        ),  # 'db' — имя сервиса из вашего docker-compose
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -105,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -116,9 +127,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-# Указываем Django искать статику внутри папок приложений
 STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
 
@@ -138,3 +150,7 @@ MAILERS = {
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "entry_list"
 LOGOUT_REDIRECT_URL = "login"
+
+# Celery settings
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
