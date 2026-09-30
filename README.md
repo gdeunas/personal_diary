@@ -24,9 +24,9 @@
 
 ## Стек технологий
 
-- Backend: Python 3.11+ / Django 4.2+ / 5.0+
+- Backend: Python 3.11+ / Django 6.1
 - Frontend: HTML5, CSS3, Bootstrap 5 (через CDN)
-- База данных: PostgreSQL 15
+- База данных: PostgreSQL 16
 - Контейнеризация: Docker / Docker Compose
 
 ---
