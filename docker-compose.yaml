@@ -8,9 +8,9 @@ services:
     env_file:
       - .env
    # environment:
-   #   - POSTGRES_USER=${DB_USER}
-   #   - POSTGRES_PASSWORD=${PASSWORD}
-   #   - POSTGRES_DB=${NAME}
+   #   - POSTGRES_USER=${{ DB_USER }}
+   #   - POSTGRES_PASSWORD=${{ PASSWORD }}
+   #   - POSTGRES_DB=${{ NAME }}
 
   redis:
     image: redis:7-alpine
