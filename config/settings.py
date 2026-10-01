@@ -96,14 +96,16 @@ DB_USER = os.environ.get("DB_USER") or os.environ.get("POSTGRES_USER") or os.env
 DB_PASSWORD = os.environ.get("DB_PASSWORD") or os.environ.get("POSTGRES_PASSWORD") or os.environ.get("PASSWORD")
 DB_PORT = os.environ.get("DB_PORT") or os.environ.get("PORT") or "5432"
 
+# Fallback checking logic for standard host identification
+default_host = "localhost" if os.environ.get("GITHUB_ACTIONS") else "db"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': DB_NAME,
         'USER': DB_USER,
         'PASSWORD': DB_PASSWORD,
-        # Защита хоста: db для Docker-контейнеров, localhost для GitHub Actions
-        'HOST': os.environ.get("DB_HOST") or os.environ.get("HOST") or ("localhost" if os.environ.get("GITHUB_ACTIONS") else "db"),
+        'HOST': os.environ.get("DB_HOST") or os.environ.get("HOST") or default_host,
         'PORT': DB_PORT,
     }
 }
