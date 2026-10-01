@@ -90,16 +90,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 #    }
 # }
 
+# Гибкое получение переменных с поддержкой разных форматов имён (.env / GitHub Actions)
+DB_NAME = os.environ.get("DB_NAME") or os.environ.get("POSTGRES_DB") or os.environ.get("NAME")
+DB_USER = os.environ.get("DB_USER") or os.environ.get("POSTGRES_USER") or os.environ.get("USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD") or os.environ.get("POSTGRES_PASSWORD") or os.environ.get("PASSWORD")
+DB_PORT = os.environ.get("DB_PORT") or os.environ.get("PORT") or "5432"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        # Если переменная DB_HOST не задана, Django автоматически проверит,
-        # запущен ли он в GitHub Actions. Если да — localhost, если локально в Docker — db.
-        'HOST': os.environ.get("DB_HOST", "localhost" if os.environ.get("GITHUB_ACTIONS") else "db"),
-        'PORT': os.environ.get("DB_PORT", "5432"),
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        # Защита хоста: db для Docker-контейнеров, localhost для GitHub Actions
+        'HOST': os.environ.get("DB_HOST") or os.environ.get("HOST") or ("localhost" if os.environ.get("GITHUB_ACTIONS") else "db"),
+        'PORT': DB_PORT,
     }
 }
 
