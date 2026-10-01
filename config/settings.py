@@ -96,7 +96,9 @@ DATABASES = {
         'NAME': os.environ.get("DB_NAME"),
         'USER': os.environ.get("DB_USER"),
         'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': os.environ.get("DB_HOST", "localhost"),
+        # Если переменная DB_HOST не задана, Django автоматически проверит,
+        # запущен ли он в GitHub Actions. Если да — localhost, если локально в Docker — db.
+        'HOST': os.environ.get("DB_HOST", "localhost" if os.environ.get("GITHUB_ACTIONS") else "db"),
         'PORT': os.environ.get("DB_PORT", "5432"),
     }
 }
