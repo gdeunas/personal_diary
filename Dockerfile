@@ -30,9 +30,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Копируем собранные бинарники зависимостей с этапа сборщика и устанавливаем их
-COPY --from=builder /app/wheels /brightness/wheels
+COPY --from=builder /app/wheels /app/wheels
 COPY --from=builder /app/requirements.txt .
-RUN pip install --no-cache /brightness/wheels/*
+RUN pip install --no-cache /app/wheels/*
 
 # Создаем директории для статики и медиафайлов
 RUN mkdir -p /app/staticfiles /app/mediafiles
@@ -40,8 +40,8 @@ RUN mkdir -p /app/staticfiles /app/mediafiles
 # Копируем исходный код всего приложения Django в контейнер
 COPY . .
 
-# Создаем безопасного системного пользователя, чтобы не запускать приложение от root
-RUN useradd -U appuser && \
+# ИСПРАВЛЕНО: Добавлен флаг -m, чтобы создать домашнюю директорию /home/appuser, необходимую для Gunicorn
+RUN useradd -m -U appuser && \
     chown -R appuser:appuser /app
 
 # Переключаемся на созданного пользователя
@@ -49,3 +49,4 @@ USER appuser
 
 # Открываем порт, на котором gunicorn будет слушать запросы внутри Docker-сети
 EXPOSE 8000
+

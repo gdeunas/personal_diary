@@ -7,10 +7,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
     env_file:
       - .env
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_DB=${NAME}
+   # environment:
+   #   - POSTGRES_USER=${DB_USER}
+   #   - POSTGRES_PASSWORD=${PASSWORD}
+   #   - POSTGRES_DB=${NAME}
 
   redis:
     image: redis:7-alpine
@@ -34,7 +34,8 @@ services:
   celery:
     build: .
     restart: always
-    command: celery -A config worker --loglevel=info
+    # command: celery -A config worker --loglevel=info
+    command: celery -A config worker -l info
     volumes:
       - .:/app
     env_file:
@@ -46,7 +47,7 @@ services:
   celery-beat:
     build: .
     restart: always
-    command: celery -A config beat --loglevel=info
+    command: celery -A config beat -l info -s /tmp/celerybeat-schedule
     volumes:
       - .:/app
     env_file:
