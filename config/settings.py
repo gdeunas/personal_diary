@@ -77,7 +77,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-#DATABASES = {
+# DATABASES = {
 #    "default": {
 #        "ENGINE": "django.db.backends.postgresql",
 #        "NAME": os.getenv("POSTGRES_DB", "project_db"),
@@ -88,7 +88,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 #        ),  # 'db' — имя сервиса из вашего docker-compose
 #        "PORT": os.getenv("DB_PORT", "5432"),
 #    }
-#}
+# }
 
 DATABASES = {
     'default': {
