@@ -77,19 +77,29 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+#DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.postgresql",
+#        "NAME": os.getenv("POSTGRES_DB", "project_db"),
+#        "USER": os.getenv("POSTGRES_USER", "project_user"),
+#        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "project_password"),
+#        "HOST": os.getenv(
+#            "DB_HOST", "db"
+#        ),  # 'db' — имя сервиса из вашего docker-compose
+#        "PORT": os.getenv("DB_PORT", "5432"),
+#    }
+#}
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "project_db"),
-        "USER": os.getenv("POSTGRES_USER", "project_user"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "project_password"),
-        "HOST": os.getenv(
-            "DB_HOST", "db"
-        ),  # 'db' — имя сервиса из вашего docker-compose
-        "PORT": os.getenv("DB_PORT", "5432"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST", "localhost"),
+        'PORT': os.environ.get("DB_PORT", "5432"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators

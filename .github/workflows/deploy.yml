@@ -10,19 +10,34 @@ jobs:
   lint-and-test:
     runs-on: ubuntu-latest
 
-    # Передаем фейковые переменные окружения, чтобы Django не падал при инициализации settings.py
+    # Поднимаем PostgreSQL прямо в окружении GitHub Actions
+    services:
+      postgres_db:
+        image: postgres:16
+        env:
+          POSTGRES_DB: test_diary_db
+          POSTGRES_USER: test_diary_user
+          POSTGRES_PASSWORD: test_diary_password
+        # Маппим порт контейнера на хост-машину runner'а
+        ports:
+          - 5432:5432
+        # Ждем, пока база данных будет готова принимать подключения
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
       DEBUG: "False"
       SECRET_KEY: "ci-test-fake-secret-key-never-use-in-production"
       ALLOWED_HOSTS: "*"
-      NAME: "test_db"
-      POSTGRES_DB: "test_db"
-      USER: "test_user"
-      POSTGRES_USER: "test_user"
-      PASSWORD: "test_password"
-      POSTGRES_PASSWORD: "test_password"
-      HOST: "localhost"
-      PORT: "5432"
+      # Переменные для подключения Django к поднятому сервису Postgres
+      DB_NAME: "test_diary_db"
+      DB_USER: "test_diary_user"
+      DB_PASSWORD: "test_diary_password"
+      DB_HOST: "localhost" # Так как порт проброшен на хост, коннектимся к localhost
+      DB_PORT: "5432"
 
     steps:
     - name: Checkout code
@@ -40,18 +55,13 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Run Full PEP8 Linting (Flake8)
-      run: |
-        # Запускаем полную проверку стиля кода PEP8
-        flake8 .
+      run: flake8 .
 
     - name: Run Static Type Checking (Mypy)
-      run: |
-        # Проверяем аннотации типов сущностей в моделях
-        mypy .
+      run: mypy .
 
-    - name: Run Application Tests
+    - name: Run Application Tests (on PostgreSQL)
       run: |
-        # Запускаем наши 21 тест — теперь пайплайн не пропустит ошибки
         python manage.py test
 
     - name: Test Docker Build
