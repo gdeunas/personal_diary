@@ -179,5 +179,6 @@ LOGOUT_REDIRECT_URL = "login"
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
 
-CSRF_TRUSTED_ORIGINS = (os.getenv("ORIGINS") or "").split(",")
+ORIGINS_ENV = os.getenv("ORIGINS")
+CSRF_TRUSTED_ORIGINS = ORIGINS_ENV.split(",") if ORIGINS_ENV else ["http://localhost:8000", "http://127.0.0.1"]
 CORS_ALLOWED_ORIGINS = ["*"]
