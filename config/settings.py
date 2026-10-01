@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+LLOWED_HOSTS = (os.getenv("ALLOWED_HOSTS") or "").split(",")
 
 
 # Application definition
@@ -179,5 +179,5 @@ LOGOUT_REDIRECT_URL = "login"
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
 
-CSRF_TRUSTED_ORIGINS = os.getenv("ORIGINS").split(",")
+CSRF_TRUSTED_ORIGINS = (os.getenv("ORIGINS") or "").split(",")
 CORS_ALLOWED_ORIGINS = ["*"]
