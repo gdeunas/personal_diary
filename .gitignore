@@ -220,3 +220,25 @@ __marimo__/
 .streamlit/secrets.toml
 
 media/
+
+# Django секреты и окружение
+.env
+.env.local
+
+# Базы данных и кэш
+*.sqlite3
+celerybeat-schedule
+celerybeat-schedule.db
+
+# Медиа и статика (локальные файлы пользователей)
+mediafiles/
+staticfiles/
+diary/media/
+
+# Кэш Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
