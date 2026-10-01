@@ -87,22 +87,32 @@ WSGI_APPLICATION = "config.wsgi.application"
 # }
 
 # Гибкое получение переменных с поддержкой разных форматов имён (.env / GitHub Actions)
-DB_NAME = os.environ.get("DB_NAME") or os.environ.get("POSTGRES_DB") or os.environ.get("NAME")
-DB_USER = os.environ.get("DB_USER") or os.environ.get("POSTGRES_USER") or os.environ.get("USER")
-DB_PASSWORD = os.environ.get("DB_PASSWORD") or os.environ.get("POSTGRES_PASSWORD") or os.environ.get("PASSWORD")
+DB_NAME = (
+    os.environ.get("DB_NAME") or os.environ.get("POSTGRES_DB") or os.environ.get("NAME")
+)
+DB_USER = (
+    os.environ.get("DB_USER")
+    or os.environ.get("POSTGRES_USER")
+    or os.environ.get("USER")
+)
+DB_PASSWORD = (
+    os.environ.get("DB_PASSWORD")
+    or os.environ.get("POSTGRES_PASSWORD")
+    or os.environ.get("PASSWORD")
+)
 DB_PORT = os.environ.get("DB_PORT") or os.environ.get("PORT") or "5432"
 
 # Fallback checking logic for standard host identification
 default_host = "localhost" if os.environ.get("GITHUB_ACTIONS") else "db"
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': os.environ.get("DB_HOST") or os.environ.get("HOST") or default_host,
-        'PORT': DB_PORT,
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": DB_NAME,
+        "USER": DB_USER,
+        "PASSWORD": DB_PASSWORD,
+        "HOST": os.environ.get("DB_HOST") or os.environ.get("HOST") or default_host,
+        "PORT": DB_PORT,
     }
 }
 
