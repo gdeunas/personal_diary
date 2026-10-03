@@ -83,8 +83,8 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /home/${{ secrets.SERVER_USER }}/personal_diary
-          git pull origin main
+          cd /opt/personal_diary
+          git pull origin feature/personal_diary
           echo "${{ secrets.ENV_FILE }}" > .env
           docker compose down
           docker compose up -d --build
