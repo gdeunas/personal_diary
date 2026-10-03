@@ -86,6 +86,7 @@ jobs:
           cd /opt/personal_diary
           rm -rf sfc 
           git clone https://github.com/gdeunas/personal_diary.git sfc
+          cd sfc
           git pull origin feature/personal_diary
           echo "${{ secrets.ENV_FILE }}" > .env
           docker compose down
