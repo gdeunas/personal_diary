@@ -17,7 +17,10 @@ services:
     build: .
     restart: always
     # command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+
+    # command: python3 manage.py runserver 0.0.0.0:8000
+
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -27,16 +30,16 @@ services:
     depends_on:
       - db
       - redis
-    ports:
-      - 8000:8000
+#    ports:
+#      - 8000:8000
 
   celery:
     build: .
     restart: always
-    # command: celery -A config worker --loglevel=info
     command: celery -A config worker -l info
     volumes:
-      - .:/app
+      # - .:/app
+      - media_volume:/app/mediafiles # Shared if tasks process uploaded images
     env_file:
       - .env
     depends_on:
