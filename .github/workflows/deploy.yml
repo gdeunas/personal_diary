@@ -90,6 +90,7 @@ jobs:
           git pull origin feature/personal_diary
           echo "${{ secrets.ENV_FILE }}" > .env
           docker compose down
-          docker compose up -d --build
+          # docker compose up -d --build
+          docker compose up -d --build --force-recreate
           docker compose exec -T web python manage.py migrate
           docker compose exec -T web python manage.py collectstatic --noinput
