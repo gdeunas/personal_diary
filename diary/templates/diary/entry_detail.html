@@ -1,0 +1,43 @@
+{% extends 'diary/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <!-- Заголовок записи -->
+                <h2 class="card-title mb-2">{{ entry.title }}</h2>
+
+                <!-- Дата создания и обновления -->
+                <p class="text-muted small mb-4">
+                    Создано: {{ entry.created_at|date:"d M Y, H:i" }}
+                    {% if entry.updated_at != entry.created_at %}
+
+                        | Изменено: {{ entry.updated_at|date:"d M Y, H:i" }}
+                    {% endif %}
+                </p>
+
+                {% if entry.image %}
+                    <div class="mb-4 text-center">
+                        <img src="{{ entry.image.url }}" class="img-fluid rounded shadow-sm" style="max-height: 450px; object-fit: contain;">
+                    </div>
+                {% endif %}
+
+                <!-- Содержимое записи -->
+                <div class="card-text fs-5 style="white-space: pre-line;">
+                    {{ entry.content }}
+                </div>
+
+                <!-- Кнопки управления -->
+                <div class="border-top mt-4 pt-3 d-flex justify-content-between">
+                    <a href="{% url 'entry_list' %}" class="btn btn-secondary">Назад к списку</a>
+                    <div>
+                        <a href="{% url 'entry_edit' entry.pk %}" class="btn btn-warning me-2">Редактировать</a>
+                        <a href="{% url 'entry_delete' entry.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
