@@ -88,7 +88,7 @@ jobs:
           git clone https://github.com/gdeunas/personal_diary.git sfc
           cd sfc
           git pull origin feature/personal_diary
-          echo "${{ secrets.ENV_FILE }}" > .env
+          echo "${{ secrets.ENV_FILE }}" > sfc/.env
           docker compose down
           # docker compose up -d --build
           docker compose up -d --build --force-recreate
