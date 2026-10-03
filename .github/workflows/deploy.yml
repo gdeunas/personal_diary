@@ -84,13 +84,25 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /opt/personal_diary
-          rm -rf sfc 
-          git clone https://github.com/gdeunas/personal_diary.git sfc
+          # rm -rf sfc 
+          
+          # Если папки sfc еще нет (первый деплой), инициализируем репозиторий
+          if [ ! -d "sfc/.git" ]; then
+            git clone https://github.com/gdeunas/personal_diary.git sfc
+          fi
+          
           cd sfc
-          git pull origin feature/personal_diary
+                   
+          # Безопасно обновляем код без удаления папки проекта
+          git fetch --all
+          git reset --hard origin/main # git pull origin feature/personal_diary
+         
           echo "${{ secrets.ENV_FILE }}" > /opt/personal_diary/sfc/.env
+          
+          # Пересобираем и перезапускаем контейнеры с минимальным downtime
           docker compose down
-          # docker compose up -d --build
           docker compose up -d --build --force-recreate
+          
+          # Применяем миграции и собираем статику внутри контейнера
           docker compose exec -T web python manage.py migrate
           docker compose exec -T web python manage.py collectstatic --noinput
