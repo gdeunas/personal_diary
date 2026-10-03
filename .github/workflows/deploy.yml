@@ -70,7 +70,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: lint-and-test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/personal_diary'
 
     steps:
     - name: Checkout code
@@ -95,7 +95,8 @@ jobs:
                    
           # Безопасно обновляем код без удаления папки проекта
           git fetch --all
-          git reset --hard origin/main # git pull origin feature/personal_diary
+          # git reset --hard origin/main # git pull origin feature/personal_diary
+          git reset --hard origin/${{ github.ref_name }}
          
           echo "${{ secrets.ENV_FILE }}" > /opt/personal_diary/sfc/.env
           
